@@ -1,105 +1,111 @@
 #include"doubly_linked_list.h"
+#include<string>
+
 using namespace std;
 
 template<typename E>
-Iterator::Iterator(Node* u) {
-    u = v;
+Iterator<E>::Iterator(Node<E>* u) {
+    v = u;
 }
 
 template<typename E>
-E& Iterator::operator*() {
+E& Iterator<E>::operator*() {
     return v->elem;
 }
 
 template<typename E>
-bool Iterator::operator==(const Iterator& p) const {
+bool Iterator<E>::operator==(const Iterator<E>& p) const {
     return v == p.v;
 }
 
 template<typename E>
-bool Iterator::operator!=(const Iterator& p) const {
+bool Iterator<E>::operator!=(const Iterator<E>& p) const {
     return v != p.v;
 }
 
 template<typename E>
-Iterator& Iterator::operator++() {
+Iterator<E>& Iterator<E>::operator++() {
     v = v->next;
     return *this;
 }
 
 template<typename E>
-Iterator& NodeList::operator--(){
+Iterator<E>& Iterator<E>::operator--(){
     v = v->prev;
     return *this;
 }
 
 template<typename E>
-NodeList::Node() {
+NodeList<E>::NodeList() {
     n = 0;
-    header = new Node;
-    trailer = new Node;
+    header = new Node<E>;
+    trailer = new Node<E>;
     header->next = trailer;
-    trailer->prev = header; 
+    trailer->prev = header;
+    header->prev = NULL;
+    trailer->next = NULL; 
 }
 
 template<typename E>
-int NodeList::size() const {
+int NodeList<E>::size() const {
     return n;
 }
 
 template<typename E>
-bool NodeList::empty() const {
+bool NodeList<E>::empty() const {
     return n==0;
 }
 
 template<typename E>
-NodeList::Iterator NodeList::begin() const {
-    return Iterator(header->next);
+Iterator<E> NodeList<E>::begin() const {
+    return Iterator<E>(header->next);
 }
 
 template<typename E>
-Iterator NodeList::end() const {
-    return Iterator(trailer);
+Iterator<E> NodeList<E>::end() const {
+    return Iterator<E>(trailer);
 }
 
 template<typename E>
-void NodeList::insert(const Iterator& p, const E& e) {
-    Node* w = p.v;
-    Node* u = w->prev;
-    Node* v = new Node;
+void NodeList<E>::insert(const Iterator<E>& p, const E& e) {
+    Node<E>* w = p.v;
+    Node<E>* u = p.v->prev;
+    Node<E>* v = new Node<E>;
     v->elem = e;
-    v->next = w; w->prev = v;
-    v->prev = u; u->next = v;
+    v->prev = u;
+    u->next = v;
+    v->next = w; 
+    w->prev = v; 
     n++;
 }
 
 template<typename E>
-void NodeList::insertFront(const E& e) {
+void NodeList<E>::insertFront(const E& e) {
     insert(begin(), e);
 }
 
 template<typename E>
-void NodeList::insertBack(const E& e) {
+void NodeList<E>::insertBack(const E& e) {
     insert(end(), e);
 }
 
 template<typename E>
-void NodeList::erase(const Iterator& p) {
-    Node* v = p.v;
-    Node* w = v->next;
-    Node* u = v->prev;
+void NodeList<E>::erase(const Iterator<E>& p) {
+    Node<E>* v = p.v;
+    Node<E>* w = v->next;
+    Node<E>* u = v->prev;
     u->next = w; w->prev = u;
     delete v;
     n--;
 }
 
 template<typename E>
-void NodeList::eraseFront() {
+void NodeList<E>::eraseFront() {
     erase(begin());
 }
 
 template<typename E>
-void NodeList::eraseBack() {
+void NodeList<E>::eraseBack() {
     erase(--end());
 }
 
